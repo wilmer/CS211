@@ -1,0 +1,1625 @@
+Script started on Sun 16 Nov 2003 12:50:01 PM EST
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n circularList.h
+     1	#ifndef H_circularList
+     2	#define H_circularList
+     3	
+     4	#include <iostream>
+     5	#include <cassert>
+     6	
+     7	template<class Type>
+     8	struct nodeType
+     9	{
+    10		Type info;
+    11		nodeType<Type> *link;
+    12	};
+    13	
+    14	template<class Type>
+    15	class circularList
+    16	{
+    17	public:
+    18	
+    19	    template<class TypeT>
+    20	    friend std::ostream& operator<<(std::ostream& outs, const circularList<TypeT>& list);
+    21	
+    22	    const circularList<Type>& operator=(const circularList<Type>&); 
+    23			//Overloads the assignment operator.
+    24	
+    25	    void initializeList(); 
+    26	 		//Initializes the list to an empty state.
+    27		      //Postcondition: first = NULL, count = 0
+    28	
+    29	    bool isEmptyList();
+    30	 		//Function to determine whether the list is empty. 
+    31			//Postcondition: Returns true if the list is empty;
+    32			//               otherwise, returns false.
+    33	
+    34	    int length();
+    35			//Function to return the number of nodes in the 
+    36			//list.
+    37			//Postcondition: The value of count is returned.
+    38	
+    39	    void destroyList();
+    40	 		//Function to delete all the nodes from the list.
+    41	  		//Postcondition: first = NULL, count = 0
+    42	
+    43	    Type front(); 
+    44	 		//Function to return the first element of the list.
+    45	 		//Precondition: The list must exist and must not be
+    46			//empty.
+    47	  		//Postcondition: If the list is empty, then the 
+    48	 		//               program terminates; otherwise, 
+    49		        //               the first element of the list is 
+    50			//               returned.
+    51	
+    52	    Type back(); 
+    53	       //Function to return the last element of the
+    54	       //list.
+    55			//Precondition: The list must exist and must not
+    56			//be empty.
+    57			//Postcondition: If the list is empty, then the 
+    58			//               program terminates; otherwise,
+    59			//               the last element of the list is 
+    60			//               returned.
+    61	
+    62	    bool search(const Type& searchItem);
+    63			//Function to determine whether searchItem is in 
+    64			//the list.
+    65			//Postcondition: Returns true if searchItem is found
+    66			//               in the list; otherwise, it returns
+    67			//               false.
+    68	
+    69	    void insertNode(const Type& newItem);
+    70	
+    71	    void deleteNode(const Type& deleteItem);
+    72	  		//Function to delete deleteItem from the list.
+    73	 		//Postcondition: If found, the node containing 
+    74	   		//               deleteItem is deleted from the 
+    75			//                list and count is decremented by 1. 
+    76	
+    77	    circularList(); 
+    78	   		//default constructor
+    79	 		//Initializes the list to an empty state.
+    80	 		//Postcondition: first = NULL, count = 0 
+    81	
+    82	    circularList(const circularList<Type>& otherList); 
+    83	         //copy constructor
+    84	
+    85	    ~circularList();   
+    86	    	//destructor
+    87	   	//Deletes all the nodes from the list.
+    88	    	//Postcondition: The list object is destroyed. 
+    89	
+    90	protected:
+    91	
+    92	    int count;		//variable to store the number of 
+    93	 					//elements in the list
+    94	
+    95	    nodeType<Type> *first; //pointer to the first node of 
+    96	                           //the list
+    97	private:
+    98	
+    99	    void copyList(const circularList<Type>& otherList); 
+   100			//Function to make a copy of otherList.
+   101			//Postcondition: A copy of otherList is created 
+   102			//               and assigned to this list.
+   103	};
+   104	
+   105	template<class Type>
+   106	bool circularList<Type>::isEmptyList()
+   107	{
+   108		return(first == NULL);
+   109	}
+   110	
+   111	template<class Type>
+   112	circularList<Type>::circularList() // default constructor
+   113	{
+   114		first = NULL;
+   115		count = 0;
+   116	}
+   117	
+   118	template<class Type>
+   119	void circularList<Type>::destroyList()
+   120	{
+   121		nodeType<Type> *temp;    
+   122		nodeType<Type> *current = first; 
+   123							
+   124		if(first != NULL)
+   125		{
+   126			current = first->link;
+   127			first->link = NULL;
+   128		}
+   129	
+   130		while(current != NULL)    
+   131		{
+   132		   temp = current;        
+   133		   current = current->link; 
+   134		   delete temp;         
+   135		}
+   136	
+   137		first = NULL;	
+   138	
+   139	 	count = 0;
+   140	}
+   141		
+   142	template<class Type>
+   143	void circularList<Type>::initializeList()
+   144	{
+   145		destroyList(); //if the list has any nodes, delete them
+   146	}
+   147	
+   148	template<class Type>
+   149	int circularList<Type>::length()
+   150	{
+   151	 	return count;
+   152	}  // end length
+   153	
+   154	template<class Type>
+   155	Type circularList<Type>::front()
+   156	{   
+   157	    assert(first != NULL);
+   158	
+   159		if(first->link == first)
+   160			return first->info;
+   161		else
+   162	   		return first->link->info; //return the info of the first node	
+   163	}//end front
+   164	
+   165	template<class Type>
+   166	Type circularList<Type>::back()
+   167	{   
+   168		 assert(first != NULL);
+   169	   	 return first->info; //return the info of the last node	
+   170	}//end back
+   171	
+   172	template<class Type>
+   173	bool circularList<Type>::search(const Type& searchItem)
+   174	{
+   175	    nodeType<Type> *current; //pointer to traverse the list
+   176	    bool found;
+   177	
+   178	    found = false;
+   179	
+   180		if(first != NULL)
+   181		{
+   182	        current = first->link;		
+   183	
+   184			while(current != first && !found)		
+   185				if(current->info >= searchItem)			
+   186					found = true;
+   187				else
+   188					current = current->link;  
+   189	
+   190			found = (current->info == searchItem); 						
+   191		}
+   192	
+   193	    return found;
+   194	}//end search
+   195	
+   196	template<class Type>
+   197	void circularList<Type>::insertNode(const Type& newItem)
+   198	{
+   199		nodeType<Type> *current;
+   200		nodeType<Type> *beforeCurrent;
+   201		nodeType<Type> *newNode;
+   202	
+   203		bool found;
+   204	
+   205		newNode = new nodeType<Type>; 
+   206	 	assert(newNode != NULL);
+   207	
+   208		newNode->info = newItem;  
+   209		newNode->link = NULL;     
+   210	                              
+   211	
+   212		if(first == NULL) 
+   213		{	
+   214		   first = newNode;
+   215		   first->link = newNode;
+   216		   count++;
+   217	 	}
+   218		else
+   219		{
+   220			if(newItem >= first->info)
+   221			{
+   222				newNode->link = first->link;
+   223				first->link = newNode;
+   224				first = newNode;
+   225			}
+   226			else
+   227			{
+   228				beforeCurrent = first;
+   229				current = first->link;
+   230				found = false;
+   231	
+   232				while(current != first && !found)		
+   233					if(current->info >= newItem)			
+   234						found = true;
+   235					else
+   236					{
+   237						beforeCurrent = current;
+   238						current = current->link;
+   239					}
+   240		   		  
+   241				beforeCurrent->link = newNode;
+   242				newNode->link = current;
+   243			}
+   244	
+   245			count++;
+   246		}
+   247	}
+   248	
+   249	template<class Type>
+   250	void circularList<Type>::deleteNode(const Type& deleteItem)
+   251	{
+   252		nodeType<Type> *current; 
+   253		nodeType<Type> *beforeCurrent; 
+   254		bool found;
+   255	
+   256		if(first == NULL)   
+   257			cout << "Empty list.\n";
+   258		else
+   259		{
+   260			found = false;
+   261			beforeCurrent = first;   
+   262			current = first->link;  
+   263		
+   264			while(current != first && !found)
+   265	  			if(current->info >= deleteItem) 
+   266					found = true;
+   267				else
+   268				{
+   269					beforeCurrent = current;
+   270					current = current->link;
+   271				}
+   272		
+   273			if(current == first)
+   274			{
+   275				if(first->info == deleteItem)
+   276				{
+   277					if(first == first->link)
+   278						first = NULL;
+   279					else
+   280					{
+   281						beforeCurrent->link = current->link;
+   282						first = beforeCurrent;
+   283					}
+   284					delete current;
+   285	
+   286					count--;
+   287				}
+   288				else
+   289					cout << "The item is not in the list." << endl;
+   290			}
+   291			else
+   292				if(current->info == deleteItem) 
+   293				{
+   294					beforeCurrent->link = current->link;
+   295					count--;
+   296					delete current;  
+   297				}
+   298				else
+   299					cout << "Item is not in the list." << endl;
+   300		} 
+   301	} 
+   302	
+   303	//Overloading the stream insertion operator
+   304	template<class TypeT>
+   305	std::ostream& operator<< (std::ostream& outs, const circularList<TypeT>& list)
+   306	{
+   307		nodeType<TypeT> *current; //pointer to traverse the list
+   308		
+   309		if(list.first != NULL)
+   310		{
+   311			current = list.first->link;    
+   312						   
+   313			while(current != list.first) //while more data to print
+   314			{
+   315				outs << current->info << " ";
+   316				current = current->link;
+   317			}
+   318	
+   319			outs << list.first->info << " ";
+   320		}
+   321	
+   322		return outs;
+   323	}
+   324	
+   325	template<class Type>
+   326	circularList<Type>::~circularList() // destructor
+   327	{
+   328		destroyList(); 
+   329	}//end destructor
+   330	
+   331	template<class Type>
+   332	void circularList<Type>::copyList(const circularList<Type>& otherList) 
+   333	{
+   334	   nodeType<Type> *newNode; 
+   335	   nodeType<Type> *current; 
+   336	   nodeType<Type> *temp; 
+   337	
+   338	   if(first != NULL)	
+   339		  destroyList();
+   340	
+   341	   if(otherList.first == NULL) 
+   342	   {
+   343			first = NULL;
+   344	 		count = 0;
+   345	   }
+   346	   else
+   347	   {
+   348			current = otherList.first->link;  
+   349										
+   350			count = otherList.count;
+   351		
+   352			temp = new nodeType<Type>; 
+   353	
+   354	 		assert(temp != NULL);
+   355	
+   356			temp->info = current->info; 
+   357			first = temp;    		     
+   358	            						   
+   359			current = current->link;     
+   360	
+   361			while(current != otherList.first)
+   362			{
+   363				newNode = new nodeType<Type>; 
+   364				assert(newNode!= NULL);
+   365	
+   366				newNode->info = current->info;	
+   367		
+   368				first->link = newNode; 		
+   369				first = newNode;   			
+   370											
+   371				current = current->link;	
+   372	       		}							
+   373			
+   374		
+   375			if(temp == first)
+   376				first->link = first;
+   377			else
+   378			{
+   379				newNode = new nodeType<Type>; 
+   380				assert(newNode!= NULL);
+   381				newNode->info = current->info;	
+   382				first->link = newNode; 		
+   383				first = newNode;   		
+   384				first->link = temp;
+   385			}
+   386	
+   387		}
+   388	}
+   389	
+   390	//copy constructor
+   391	template<class Type>
+   392	circularList<Type>::circularList(const circularList<Type>& otherList) 
+   393	{
+   394		first = NULL;
+   395	
+   396		copyList(otherList);
+   397		
+   398	}//end copy constructor
+   399	
+   400	//overload the assignment operator
+   401	template<class Type>
+   402	const circularList<Type>& circularList<Type>::operator=(const circularList<Type>& otherList)
+   403	{ 
+   404		if(this != &otherList) 
+   405		{
+   406			copyList(otherList);
+   407		}
+   408	
+   409		return *this; 
+   410	}
+   411	
+   412	#endif
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat 0[K-n customer.cpp
+     1	#include <iostream>
+     2	#include "customer.h"
+     3	
+     4	using namespace std;
+     5	
+     6	void customer::print()
+     7	{
+     8		personType::print();
+     9		cout << endl << "Videos rented:" << endl;
+    10		printRentedVideo();
+    11		cout << endl << "Number rented:" << getRentals() << endl;
+    12	}
+    13	
+    14	void customer::custInfo(string first, string last)
+    15	{
+    16		personType::setName(first,last);
+    17	}
+    18	 
+    19	void customer::rentVideo(string title)
+    20	{
+    21		rentedVideoList.insertNode(title);
+    22	}
+    23	
+    24	void customer::returnVideo(string title)
+    25	{
+    26		rentedVideoList.deleteNode(title);
+    27	}
+    28	
+    29	int customer::getRentals()
+    30	{
+    31		return rentedVideoList.length();
+    32	}
+    33	
+    34	void customer::printRentedVideo()
+    35	{
+    36		cout << rentedVideoList << endl;
+    37	}
+    38	
+    39	customer::customer(string first, string last):personType(first, last)
+    40	{
+    41	}
+    42	
+    43	bool customer::operator==(customer cust)
+    44	{
+    45		string fname = cust.getFirstName();
+    46		string lname = cust.getLastName();
+    47	
+    48		return(firstName == fname && lastName == lname);
+    49	}
+    50	
+    51	bool customer::operator!=(customer cust)
+    52	{
+    53		string fname = cust.getFirstName();
+    54		string lname = cust.getLastName();
+    55	
+    56		return(firstName != fname && lastName != lname);
+    57	}
+    58	
+    59	ostream& operator<<(ostream& outs,  customer& cust)
+    60	{
+    61		string fname = cust.getFirstName();
+    62		string lname = cust.getLastName();
+    63	
+    64		outs << fname << " " << lname << " " << cust.rentedVideoList.length() << endl;
+    65		
+    66		return outs;
+    67	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n customer.h
+     1	#ifndef H_customer
+     2	#define H_customer
+     3	
+     4	#include <iostream>
+     5	#include <string>
+     6	#include "circularList.h"
+     7	#include "personType.h"
+     8	
+     9	using namespace std;
+    10	
+    11	class customer:public personType
+    12	{
+    13	        friend ostream& operator<<(ostream&,  customer&);
+    14	
+    15	public:
+    16	
+    17		void print();
+    18	
+    19		void custInfo(string first, string last);
+    20	
+    21		void rentVideo(string);
+    22	
+    23		void returnVideo(string);
+    24	
+    25		int getRentals();
+    26	
+    27		void printRentedVideo();
+    28	
+    29		customer(string first = "", string last = "");
+    30	
+    31		bool operator==(customer);
+    32	
+    33		bool operator!=(customer);
+    34	
+    35	private:
+    36	
+    37		circularList<string> rentedVideoList;
+    38	};
+    39	
+    40	#endif
+    41	 
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n customerList.cpp
+     1	#include <iostream>
+     2	#include <string>
+     3	
+     4	#include "customerList.h"
+     5	
+     6	using namespace std;
+     7	
+     8	template <class Type>
+     9	bool customerList<Type>::custSearch(customer& cust)
+    10	{
+    11		bool found;
+    12		nodeType<Type> *current;
+    13	
+    14		searchCust(cust, found, current);
+    15	
+    16		return found;
+    17	}
+    18	
+    19	template <class Type>
+    20	void customerList<Type>::custReturnVideo(customer& cust, string title)
+    21	{
+    22		bool found;
+    23		nodeType<Type> *current;
+    24	
+    25		searchCust(cust, found, current);
+    26		current->info.returnVideo(title);
+    27	}
+    28	
+    29	template <class Type>
+    30	void customerList<Type>::custRentVideo(customer& cust, string title)
+    31	{
+    32		bool found;
+    33		nodeType<Type> *current;
+    34	
+    35		searchCust(cust, found, current);
+    36		current->info.rentVideo(title);
+    37	}
+    38	
+    39	template <class Type>
+    40	int customerList<Type>::custNoOfRentals(customer& cust)
+    41	{
+    42		bool found;
+    43		nodeType<Type> *current;
+    44	
+    45		searchCust(cust, found, current);
+    46	
+    47		return current->info.getNoOfRentals();
+    48	}
+    49	
+    50	template <class Type>
+    51	void customerList<Type>::rentedVideosInfo()
+    52	{
+    53		nodeType<Type> *current;
+    54		current = first;
+    55	
+    56		cout << "Video Rental Information" << endl << endl;
+    57		while(current != NULL)
+    58		{
+    59			if(current->info.getNoOfRentals() > 0)
+    60			{
+    61				cout << "Customer Name: " << current->info.getLastName() << endl;
+    62				cout << "Videos Rented: " << endl;
+    63				current->info.printRentedVideo();
+    64				cout << endl;
+    65			}
+    66	
+    67			current = current->link;
+    68		}
+    69	}
+    70	
+    71	template <class Type>
+    72	void customerList<Type>::searchCust(customer& cust, bool& found, nodeType<Type>* &current)
+    73	{
+    74		found = false;
+    75	   
+    76	   	if(first == NULL)
+    77	  	{
+    78		    cout << "List is empty." << endl;
+    79	   	}
+    80		else
+    81	   	{
+    82			current = first;
+    83			found = false;
+    84	
+    85			while(!found && current != NULL)
+    86			{
+    87				if(current->info.getLastName() == cust.getLastName())
+    88	       			{
+    89					found = true;
+    90				}
+    91				else
+    92				{
+    93					current = current->link;
+    94				}
+    95			}
+    96		}
+    97	}
+    98	
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n customerList.h
+     1	#ifndef H_customerList
+     2	#define H_customerList
+     3	
+     4	#include <iostream>
+     5	#include <string>
+     6	#include "circularList.h"
+     7	#include "orderedCircularList.h"
+     8	#include "customer.h"
+     9	
+    10	using namespace std;
+    11	
+    12	template <class Type>
+    13	class customerList:public orderedCircularList<Type>
+    14	{
+    15	public:
+    16	
+    17		bool custSearch(customer& cust);
+    18	
+    19		void custReturnVideo(customer& cust, string title);
+    20	
+    21		void custRentVideo(customer& cust, string title);
+    22	
+    23		int  custNoOfRentals(customer& cust);
+    24	
+    25		void rentedVideosInfo();
+    26	
+    27	private:
+    28	
+    29		void searchCust(customer& cust, bool& found, nodeType<Type>* &current);
+    30	
+    31	};
+    32	
+    33	#endif
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat 0[K-n Makefile
+     1	#  this makefile creates 2 executables   -- add  and sub
+     2	#  both add.cc and sub.cc include long.h
+     3	#  both executabes depend on long.o 
+     4	#  none of these classes are template classes
+     5	
+     6	all: testCircular testCustomer videoList.o videoType.o customerList.o
+     7	
+     8	###########################################################
+     9	testCircular: testCircular.o
+    10		g++ testCircular.o -o testCircular
+    11	
+    12	testCircular.o: testCircular.cpp circularList.h
+    13		g++ -c testCircular.cpp
+    14	
+    15	###########################################################
+    16	
+    17	testCustomer: testCustomer.o personType.o customer.o
+    18		g++ -o testCustomer -g testCustomer.o personType.o customer.o
+    19	
+    20	testCustomer.o: customer.h circularList.h personType.h testCustomer.cpp
+    21		g++ -g -c testCustomer.cpp
+    22	
+    23	personType.o: personType.h personType.cpp
+    24		g++ -g -c personType.cpp
+    25	
+    26	customer.o: customer.h customer.cpp
+    27		g++ -g -c customer.cpp
+    28	###########################################################
+    29	#testOrdCList: testOrdCList.o
+    30	#	g++ testOrdCList.o -o testOrdCList
+    31	
+    32	#testOrdCList.o: orderedCircularList.h testOrdCList.cpp
+    33	#	g++ -g -c testOrdCList.cpp
+    34	
+    35	###########################################################
+    36	
+    37	videoList.o: videoList.h videoList.cpp
+    38		g++ -g -c videoList.cpp
+    39	
+    40	videoType.o: videoType.h videoTypeImp.cpp
+    41		g++ -g -c videoTypeImp.cpp
+    42	
+    43	customerList.o: customerList.h customerList.cpp
+    44		g++ -g -c customerList.cpp
+    45	
+    46	clean: 
+    47		rm *.o testCircular testCustomer personType circularList testOrdCList videoList videoType customerList
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n orderedCircularList.h
+     1	#ifndef H_orderedCircularList
+     2	#define H_orderedCircularList
+     3	
+     4	#include "circularList.h"
+     5	
+     6	using namespace std;
+     7	
+     8	template<class Type>
+     9	class orderedCircularList:public circularList<Type>
+    10	{
+    11	
+    12	public:
+    13	
+    14	    orderedCircularList(); 
+    15	
+    16	    bool search(const Type& searchItem);
+    17			//Function to determine whether searchItem is in 
+    18			//the list.
+    19			//Postcondition: Returns true if searchItem is found
+    20			//               in the list; otherwise, it returns
+    21			//               false.
+    22	
+    23	    void insertNode(const Type& newItem);
+    24	
+    25	    void deleteNode(const Type& deleteItem);
+    26	  		//Function to delete deleteItem from the list.
+    27	 		//Postcondition: If found, the node containing 
+    28	   		//               deleteItem is deleted from the 
+    29			//                list and count is decremented by 1. 
+    30	};
+    31	
+    32	template<class Type>
+    33	bool orderedCircularList<Type>::search(const Type& searchItem)
+    34	{
+    35	    nodeType<Type> *current; //pointer to traverse the list
+    36	    bool found;
+    37	
+    38	    found = false;
+    39	
+    40		if(first != NULL)
+    41		{
+    42	        current = first->link;		
+    43	
+    44			while(current != first && !found)		
+    45				if(current->info >= searchItem)			
+    46					found = true;
+    47				else
+    48					current = current->link;  
+    49			if(found)
+    50				found = (current->info == searchItem); 						
+    51		}
+    52	
+    53	    return found;
+    54	}//end search
+    55	
+    56	template<class Type>
+    57	void orderedCircularList<Type>::insertNode(const Type& newItem)
+    58	{
+    59		nodeType<Type> *current;
+    60		nodeType<Type> *beforeCurrent;
+    61		nodeType<Type> *newNode;
+    62	
+    63		bool found;
+    64	
+    65		newNode = new nodeType<Type>; 
+    66	 	assert(newNode != NULL);
+    67	
+    68		newNode->info = newItem;  
+    69		newNode->link = NULL;     
+    70	                              
+    71	
+    72		if(first == NULL) 
+    73		{	
+    74		   first = newNode;
+    75		   first->link = newNode;//?
+    76		   count++;
+    77	 	}
+    78		else
+    79		{
+    80			if(newItem >= first->info)
+    81			{
+    82				newNode->link = first->link;
+    83				first->link = newNode;
+    84				first = newNode;
+    85			}
+    86			else
+    87			{
+    88				beforeCurrent = first;
+    89				current = first->link;
+    90				found = false;
+    91	
+    92				while(current != first && !found)		
+    93					if(current->info >= newItem)			
+    94						found = true;
+    95					else
+    96					{
+    97						beforeCurrent = current;
+    98						current = current->link;
+    99					}
+   100		   		  
+   101				beforeCurrent->link = newNode;
+   102				newNode->link = current;
+   103			}
+   104			count++;
+   105		}
+   106	}
+   107	
+   108	template<class Type>
+   109	void orderedCircularList<Type>::deleteNode(const Type& deleteItem)
+   110	{
+   111		nodeType<Type> *current; 
+   112		nodeType<Type> *beforeCurrent; 
+   113		bool found;
+   114	
+   115		if(first == NULL)   
+   116			cout << "Empty list.\n";
+   117		else
+   118		{
+   119			found = false;
+   120			beforeCurrent = first;   
+   121			current = first->link;  
+   122		
+   123			while(current != first && !found)
+   124	  			if(current->info >= deleteItem) 
+   125					found = true;
+   126				else
+   127				{
+   128					beforeCurrent = current;
+   129					current = current->link;
+   130				}
+   131		
+   132			if(current == first)
+   133			{
+   134				if(first->info == deleteItem)
+   135				{
+   136					if(first == first->link)
+   137						first = NULL;
+   138					else
+   139					{
+   140						beforeCurrent->link = current->link;
+   141						first = beforeCurrent;
+   142					}
+   143					delete current;
+   144	
+   145					count--;
+   146				}
+   147				else
+   148					cout << "The item is not in the list." << endl;
+   149			}
+   150			else
+   151				if(current->info == deleteItem) 
+   152				{
+   153					beforeCurrent->link = current->link;
+   154					count--;
+   155					delete current;  
+   156				}
+   157				else
+   158					cout << "Item is not in the list." << endl;
+   159		} 
+   160	} 
+   161	
+   162	#endif 
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n personType.cpp
+     1	#include <iostream>
+     2	#include "personType.h"
+     3	
+     4	using namespace std;
+     5	
+     6	void personType::print() const
+     7	{
+     8		cout << firstName << " " << lastName;
+     9	}
+    10	
+    11	void personType::setName(string first, string last)
+    12	{
+    13		firstName = first;
+    14		lastName = last;
+    15	}
+    16	
+    17	string personType::getFirstName()
+    18	{
+    19		return firstName;
+    20	}
+    21	
+    22	string personType::getLastName()
+    23	{
+    24		return lastName;
+    25	}
+    26	
+    27	personType::personType(string first, string last)
+    28	{ 
+    29		firstName = first;
+    30		lastName = last;
+    31	}
+    32	
+    33	bool personType::operator== (personType person1)
+    34	{
+    35		return (firstName == person1.firstName && lastName == person1.lastName);
+    36	}
+    37	
+    38	bool personType::operator!=(personType person1)
+    39	{
+    40		return (firstName != person1.firstName || lastName != person1.lastName);
+    41	}
+    42	
+    43	ostream& operator<<(ostream& outs, const personType &name)
+    44	{
+    45		outs << name.firstName << " " << name.lastName;
+    46		return outs;
+    47	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n personTyp.[Ke.h
+     1	#ifndef person_H
+     2	#define person_H
+     3	
+     4	#include <iostream>
+     5	#include <string>
+     6	
+     7	using namespace std;
+     8	
+     9	class personType
+    10	{
+    11	   friend ostream& operator<<(ostream&, const personType&);
+    12	
+    13	public:
+    14		void print() const;
+    15	
+    16		void setName(string first, string last);
+    17	
+    18		string getFirstName();
+    19	
+    20		string getLastName();
+    21	
+    22		personType(string first = "", string last = "");
+    23	
+    24		bool operator==(personType);
+    25	
+    26		bool operator!=(personType);
+    27	
+    28	protected:
+    29	
+    30		string firstName;
+    31	
+    32		string lastName;
+    33	};
+    34	
+    35	#endif
+    36	 
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n testCircular.cpp
+     1	#include "circularList.h"
+     2	
+     3	using namespace std;
+     4	
+     5	void testCopyConstructor(circularList<int> List);
+     6	
+     7	int main()
+     8	{
+     9		circularList<int> list1, list2;			
+    10		int num, i;										
+    11	
+    12		cout << "Enter five numbers:" << endl;										
+    13	
+    14		for(i=1; i <= 5; i++)								
+    15		{
+    16			cin >> num;									
+    17			list1.insertNode(num);						
+    18		}
+    19	
+    20		cout << endl;										
+    21	
+    22		cout << "List 1: " << endl << list1 << endl;			
+    23	
+    24		cout << "List 1 length is: " << list1.length() << endl;			
+    25	
+    26		cout << "Enter a number to search for: ";
+    27		
+    28		cin >> num;										
+    29		
+    30		cout << endl;										
+    31	
+    32		if(list1.search(num))
+    33		{							
+    34			cout << num << " is in the list." << endl;									
+    35		}
+    36		else											
+    37		{
+    38			cout << num << " is not in the list." << endl;	
+    39		}
+    40	
+    41		cout << "Enter a number to delete: ";								
+    42	
+    43		cin >> num;										
+    44	
+    45		cout << endl;										
+    46	
+    47		list1.deleteNode(num);							
+    48		
+    49		cout << "After deletion List 1 is: " << list1 << endl;					
+    50	
+    51		cout << "List 1 length is now " << list1.length() << endl;						
+    52	
+    53		list2 = list1;	   
+    54	
+    55		cout << "List 2 is: " << list2 << endl;			
+    56		
+    57		cout << "Length of List 2 is " << list2.length() << endl;									
+    58	
+    59		testCopyConstructor(list1);						
+    60	
+    61		cout << "List 1: " << list1 << endl;			
+    62	
+    63		return 0;			 							
+    64	}
+    65	
+    66	void testCopyConstructor(circularList<int> List)
+    67	{
+    68	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n cu[K[KtestCustomer.cpp
+     1	#include <iostream>
+     2	#include <string>
+     3	#include "customer.h"
+     4	
+     5	using namespace std;
+     6	
+     7	void Menu();
+     8	
+     9	int main()
+    10	{
+    11		int choice;
+    12		string video, fname, lname;
+    13	
+    14	        cout << "Enter customer first name: ";
+    15	        cin >> fname;
+    16	        cout << "Enter customer last name: ";
+    17	        cin >> lname;
+    18	        cout << endl;
+    19	
+    20		Menu();
+    21	
+    22		cout << "Enter choice: ";
+    23		cin >> choice;
+    24		cout << endl;
+    25	
+    26		customer one (fname, lname);
+    27	
+    28		while(choice != 4)
+    29		{
+    30			switch(choice)
+    31			{
+    32			case 1:   one.print();
+    33				  break;
+    34			
+    35			case 2:   cout << "Enter name of video: ";
+    36				  cin >> video;
+    37				  one.rentVideo(video);
+    38				  break;
+    39	
+    40			case 3:   cout << "Enter name of video:";
+    41				  cin >> video;
+    42				  one.returnVideo(video);
+    43				  break;
+    44	
+    45			default:  cout << "Pick Again!" << endl;
+    46			}
+    47	
+    48			Menu();
+    49			cout << "Enter choice: ";
+    50			cin >> choice;
+    51			cout << endl;
+    52		}
+    53	
+    54		return 0;
+    55	}
+    56	
+    57	void Menu()
+    58	{
+    59		cout << "1. Print customer." << endl;
+    60		cout << "2. Customer rents video." << endl;
+    61		cout << "3. Customer returns video." << endl;
+    62		cout << "4. Quit" << endl;
+    63	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n testOrdCl[KList.cpp
+     1	#include <iostream>
+     2	#include "orderedCircularList.h"
+     3	
+     4	using namespace std;
+     5	
+     6	void testCopyConstructor(orderedCircularList<int> List);
+     7	
+     8	int main()
+     9	{
+    10		orderedCircularList<int> list1, list2;			
+    11		int num, i;										
+    12	
+    13		cout << "Enter five numbers:" << endl;										
+    14	
+    15		for(i=1; i <= 5; i++)								
+    16		{
+    17			cin >> num;									
+    18			list1.insertNode(num);						
+    19		}
+    20	
+    21		cout << endl;										
+    22	
+    23		cout << "List 1: " << endl << list1 << endl;			
+    24	
+    25		cout << "List 1 length is: " << list1.length() << endl;			
+    26	
+    27		cout << "Enter a number to search for: ";
+    28		
+    29		cin >> num;										
+    30		
+    31		cout << endl;										
+    32	
+    33		if(list1.search(num))
+    34		{							
+    35			cout << num << " is in the list." << endl;									
+    36		}
+    37		else											
+    38		{
+    39			cout << num << " is not in the list." << endl;	
+    40		}
+    41	
+    42		cout << "Enter a number to delete: ";								
+    43	
+    44		cin >> num;										
+    45	
+    46		cout << endl;										
+    47	
+    48		list1.deleteNode(num);							
+    49		
+    50		cout << "After deletion List 1 is: " << list1 << endl;					
+    51	
+    52		cout << "List 1 length is now " << list1.length() << endl;						
+    53	
+    54		list2 = list1;	   
+    55	
+    56		cout << "List 2 is: " << list2 << endl;			
+    57		
+    58		cout << "Length of List 2 is " << list2.length() << endl;									
+    59	
+    60		testCopyConstructor(list1);						
+    61	
+    62		cout << "List 1: " << list1 << endl;			
+    63	
+    64		return 0;			 							
+    65	}
+    66	
+    67	void testCopyConstructor(orderedCircularList<int> List)
+    68	{
+    69	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n videoList.cpp
+     1	#include <iostream>
+     2	#include <string>
+     3	#include "videoList.h"
+     4	
+     5	using namespace std;
+     6	
+     7	bool videoList::isVideoAvailable(string title) 
+     8	{
+     9		bool found;
+    10		nodeType<videoType> *location;
+    11	
+    12		searchVideoList(title,found,location);
+    13	
+    14		if(found)
+    15			found = (location->info.getNoOfCopiesInStock() > 0);
+    16		else 
+    17			found = false;
+    18	
+    19		return found;
+    20	}
+    21	
+    22	void videoList::videoCheckIn(string title)
+    23	{
+    24		bool found = false;
+    25		nodeType<videoType> *location;
+    26	
+    27		searchVideoList(title,found,location);
+    28	
+    29		if(found)
+    30			location->info.checkIn();
+    31		else
+    32			cout<<"The store does not carry this video."<<endl;
+    33	}
+    34	
+    35	void videoList::videoCheckOut(string title)
+    36	{
+    37		bool found = false;
+    38		nodeType<videoType> *location;
+    39	
+    40		searchVideoList(title,found,location);
+    41	
+    42		if(found)
+    43			location->info.checkOut();
+    44		else
+    45			cout<<"The store does not carry this video."<<endl;
+    46	}
+    47	
+    48	bool videoList::videoCheckTitle(string title)
+    49	{
+    50		bool found = false;
+    51		nodeType<videoType> *location;
+    52	
+    53		searchVideoList(title,found,location);
+    54	
+    55		return found;
+    56	}
+    57	
+    58	void videoList::videoUpdateInStock(string title, int num)
+    59	{
+    60		bool found = false;
+    61		nodeType<videoType> *location;
+    62	
+    63		searchVideoList(title,found,location);
+    64	
+    65		if(found)
+    66			location->info.updateInStock(num);
+    67		else
+    68			cout<<"The store does not carry this video."<<endl;
+    69	}
+    70	
+    71	void videoList::videoSetCopiesInStock(string title, int num)
+    72	{
+    73		bool found = false;
+    74		nodeType<videoType> *location;
+    75	
+    76		searchVideoList(title,found,location);
+    77	
+    78		if(found)
+    79			location->info.setCopiesInStock(num);
+    80		else
+    81			cout<<"The store does not carry this video."<<endl;
+    82	}
+    83	
+    84	bool videoList::videoSearch(string title)
+    85	{
+    86		bool found = false;
+    87		nodeType<videoType> *location;
+    88	
+    89		searchVideoList(title,found,location);
+    90	
+    91		return found;
+    92	}
+    93	
+    94	void videoList::searchVideoList(string title, bool& found, nodeType<videoType>* &current)
+    95	{
+    96		found = false;  
+    97	   
+    98	   	if(first == NULL) 
+    99		{
+   100		   cout << "List is empty." << endl;
+   101		}
+   102		else
+   103		{
+   104		   current = first; 
+   105		   found = false;       
+   106	
+   107		   while(!found && current != NULL) 
+   108			if(current->info.checkTitle( title))  
+   109	       			found = true;
+   110			else
+   111				current = current->link; 
+   112		}
+   113	}
+   114	
+   115	void videoList::videoPrintTitle()
+   116	{
+   117		nodeType<videoType>* current;
+   118	
+   119		current = first;
+   120		while(current != NULL)
+   121		{
+   122			current->info.printTitle();
+   123			current = current->link;
+   124		}
+   125	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n videoList.h
+     1	#ifndef H_videoList
+     2	#define H_videoList
+     3	
+     4	#include <iostream>
+     5	#include <string>
+     6	#include "orderedCircularList.h"
+     7	#include "videoType.h"
+     8	
+     9	using namespace std;
+    10	
+    11	class videoList: public orderedCircularList<videoType> 
+    12	{ 
+    13	public:     
+    14	    bool videoSearch(string vTitle);
+    15			//Function to search the list to see whether a
+    16			//particular title, specified by the parameter title,
+    17			//is in the store.
+    18			//Postcondition: Returns true if the title is found; 
+    19			//               otherwise, returns false.
+    20	
+    21	    bool isVideoAvailable(string vTitle);
+    22			//Function to return true if at least one copy of a 
+    23			//particular video is in the store.     
+    24	
+    25	    void videoCheckOut(string title);
+    26			//Function to check out a video, that is, rent a video.
+    27			//Postcondition: copiesInStock is decremented by one.
+    28	
+    29	    void videoCheckIn(string vTitle);
+    30			//Function to check in a video returned by a customer.
+    31			//Postcondition: copiesInstock is incremented by one.     
+    32	
+    33	    bool videoCheckTitle(string vTitle);
+    34			//Function to determine whether a particular video is in 
+    35			//the store.
+    36			//Postcondition: Returns true if the video title is the
+    37			//               same as vTitle; otherwise, returns 
+    38			//               false.
+    39	
+    40	    void videoUpdateInStock(string vTitle, int num);
+    41			//Function to update the number of copies of a video
+    42			//by adding the value of the parameter num. The 
+    43			//parameter vTitle specifies the name of the video for
+    44			//which the number of copies is to be updated.
+    45			//Postcondition: copiesInStock = copiesInStock + num   
+    46	
+    47	    void videoSetCopiesInStock(string vTitle, int num);
+    48			//Function to reset the number of copies of a video.
+    49			//The parameter vTitle specifies the name of the video
+    50			//for which the number of copies is to be reset; the 
+    51			//parameter num specifies the number of copies.
+    52			//Postcondition: copiesInStock = num     
+    53	
+    54	    void videoPrintTitle();
+    55			//Function to print the titles of all the videos in the store.
+    56	
+    57	 private:     
+    58		 void searchVideoList(string vTitle, bool& found,
+    59					          nodeType<videoType>* &current);
+    60			//Function to searche the video list for a particular
+    61			//video, specified by the parameter vTitle. 
+    62			//Postcondition: If the video is found, the parameter 
+    63			//               found is set to true; otherwise, it is set 
+    64			//               to false. The parameter current points to 
+    65			//               the node containing the video.
+    66	};
+    67	
+    68	#endif
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n videoStore.h[K[K[K[K[K[K[KType.h
+     1	#ifndef H_videoType
+     2	#define H_videoType
+     3	
+     4	#include <iostream>
+     5	#include <string>
+     6	using namespace std;
+     7	
+     8	class videoType 
+     9	{     
+    10		friend ostream& operator<<(ostream&, const videoType&);
+    11	
+    12	public:
+    13	    void setVideoInfo(string title, string star1, 
+    14	                      string star2, string producer, 
+    15	                      string director, string productionCo, 
+    16	                      int setInStock);
+    17		    //Function to set the details of a video. 
+    18			//Private data members are set according to the parameters.
+    19			//Postcondition: videoTitle = title; movieStar1 = star1;  
+    20			//               movieStar2 = star2; movieProducer = 
+    21			//               producer; movieDirector = director; 
+    22			//               movieProductionCo = productionCo; 
+    23			//               copiesInStock = setInStock
+    24	
+    25	    int getNoOfCopiesInStock() const;
+    26		    //Function to check the number of copies in stock. 
+    27		    //Postcondition: The value of the data member 
+    28	 	    //               copiesInStock is returned.     
+    29	
+    30		void checkOut();
+    31		    //Function to rent a video. 
+    32		    //Postcondition: The number of copies in stock is 
+    33	        //               decremented by one.
+    34	
+    35	    void checkIn();
+    36		    //Function to check in a video. 
+    37		    //Postcondition: The number of copies in stock is 
+    38	 	    //               incremented by one.     
+    39	
+    40		void printTitle() const;
+    41		    //Function to print the title of a movie.   
+    42	
+    43		void printInfo() const;
+    44		    //Function to print the details of a video.
+    45		    //The title of the movie, stars, director, and so on are
+    46		    //displayed on the screen.
+    47	
+    48	     bool checkTitle(string title);
+    49		     //Function to check whether the title is the same as the
+    50			//title of the video.
+    51		    //Postcondition: Returns true if the title is the same as 
+    52	 	    //               the title of the video; 
+    53			//                otherwise, returns false.   
+    54	
+    55		 void updateInStock(int num);
+    56		    //Function to increment the number of copies in stock by 
+    57		    //adding the value of the parameter num.
+    58		    //Postcondition: copiesInStock = copiesInStock  + num     
+    59	
+    60		 void setCopiesInStock(int num);
+    61		    //Function to set the number of copies in stock.
+    62		    //Postcondition: copiesInStock = num
+    63	
+    64	    string getTitle();
+    65		    //Function to return the title of the video.
+    66	 	    //Postcondition: The title of the video is returned.
+    67	
+    68	     videoType(string title = "", string star1 = "", 
+    69	              string star2 = "", string producer = "", 
+    70	              string director = "", string productionCo = "", 
+    71	      	      int setInStock = 0);
+    72		     //constructor
+    73		     //Private data members are set according to the 
+    74	 	     //incoming parameters. If no values are specified, the 
+    75	 	     //default values are assigned.
+    76			//Postcondition: videoTitle = title; movieStar1 = star1; 
+    77			//               movieStar2 = star2; movieProducer = producer;
+    78			//               movieDirector = director;
+    79			//               movieProductionCo = productionCo;
+    80			//               copiesInStock = setInStock
+    81	
+    82		    //Overloads the relational operators.
+    83	    bool operator==(const videoType&) const;
+    84	    bool operator!=(const videoType&) const;
+    85	
+    86	private:
+    87	    string videoTitle;		//variable to store the name 
+    88	  							//of the movie
+    89	    string movieStar1;		//variable to store the name 
+    90	 							//of the star
+    91	    string movieStar2;		//variable to store the name 
+    92	 							//of the star 
+    93	    string movieProducer;   //variable to store the name 
+    94	  							//of the producer 
+    95	    string movieDirector;   //variable to store the name 
+    96	                            //of the director 
+    97	    string movieProductionCo;  //variable to store the name 
+    98	                               //of the production company 
+    99	    int copiesInStock; 		//variable to store the number of 
+   100	 							//copies in stock
+   101	};
+   102	
+   103	#endif
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ cat -n videoTypeInp[K[Kmp.cpp
+     1	
+     2	#include <iostream>
+     3	#include <string>
+     4	#include "videoType.h"
+     5	
+     6	using namespace std;
+     7	
+     8	void videoType::setVideoInfo(string title, string star1,  				    
+     9								 string star2, string producer,  				    
+    10								 string director, string productionCo, 				    
+    11								 int setInStock) 
+    12	{ 	     
+    13		videoTitle = title; 	     
+    14		movieStar1 = star1;
+    15		movieStar2 = star2;
+    16		movieProducer = producer;
+    17		movieDirector = director;
+    18		movieProductionCo = productionCo;
+    19		copiesInStock = setInStock;
+    20	}
+    21	
+    22	void videoType::checkOut()
+    23	{
+    24		if(getNoOfCopiesInStock() > 0)
+    25		   copiesInStock--;
+    26		else
+    27		   cout<<"Currently out of stock"<<endl;
+    28	}
+    29	
+    30	void videoType::checkIn()
+    31	{
+    32		copiesInStock++;
+    33	}
+    34	
+    35	int videoType::getNoOfCopiesInStock() const
+    36	{
+    37		return copiesInStock;
+    38	}
+    39	
+    40	void videoType::printTitle() const
+    41	{
+    42	    cout<<"Video Title: "<<videoTitle<<endl;
+    43	}
+    44	
+    45	void videoType::printInfo() const
+    46	{
+    47		cout<<"Video Title: "<<videoTitle<<endl;
+    48		cout<<"Stars: "<<movieStar1<<" and "<<movieStar2<<endl;
+    49		cout<<"Producer: "<<movieProducer<<endl;
+    50		cout<<"Director: "<<movieDirector<<endl;
+    51		cout<<"Production Company: "<<movieProductionCo<<endl;
+    52		cout<<"Copies in stock: "<<copiesInStock<<endl;
+    53	}
+    54	
+    55	bool videoType::checkTitle(string title)
+    56	{
+    57		return(videoTitle == title);
+    58	}
+    59	
+    60	void videoType::updateInStock(int num)
+    61	{
+    62		copiesInStock += num;
+    63	}
+    64	
+    65	void videoType::setCopiesInStock(int num)
+    66	{
+    67		 copiesInStock = num;
+    68	}
+    69	
+    70	string videoType::getTitle()
+    71	{
+    72		 return videoTitle;
+    73	}
+    74	
+    75	videoType::videoType(string title, string star1, 
+    76	     	             string star2, string producer, 
+    77	       	             string director,
+    78		                 string productionCo, int setInStock)
+    79	{
+    80		setVideoInfo(title, star1, star2, producer, director,
+    81				     productionCo, setInStock);
+    82	}
+    83	
+    84	bool videoType::operator==(const videoType& other) const
+    85	{
+    86		return (videoTitle == other.videoTitle);
+    87	}
+    88	
+    89	bool videoType::operator!=(const videoType& other) const
+    90	{
+    91		return (videoTitle != other.videoTitle);
+    92	}
+    93	
+    94	ostream& operator<<(ostream& os, const videoType& video)
+    95	{
+    96		os<<endl;
+    97		os<<"Video Title: "<<video.videoTitle<<endl;
+    98		os<<"Stars: "<<video.movieStar1<<" and "
+    99		  <<video.movieStar2<<endl;
+   100		os<<"Producer: "<<video.movieProducer<<endl;
+   101		os<<"Director: "<<video.movieDirector<<endl;
+   102		os<<"Production Company: "<<video.movieProductionCo<<endl;
+   103		os<<"Copies in stock: "<<video.copiesInStock<<endl;
+   104		os<<"_____________________________________"<<endl;
+   105		return os;
+   106	}
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ make all
+g++ -c testCircular.cpp
+g++ testCircular.o -o testCircular
+g++ -g -c testCustomer.cpp
+g++ -g -c personType.cpp
+g++ -g -c customer.cpp
+g++ -o testCustomer -g testCustomer.o personType.o customer.o
+g++ -g -c videoList.cpp
+g++ -g -c videoTypeImp.cpp
+g++ -g -c customerList.cpp
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ ./testCircular[K[K[K[K[Kcular
+Enter five numbers:
+1
+2
+3
+4
+5
+
+List 1: 
+1 2 3 4 5 
+List 1 length is: 5
+Enter a number to search for: 6
+
+6 is not in the list.
+Enter a number to delete: 2
+
+After deletion List 1 is: 1 3 4 5 
+List 1 length is now 4
+List 2 is: 1 3 4 5 
+Length of List 2 is 4
+List 1: 1 3 4 5 
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ ./testCustomer
+Enter customer first name: Vern    Walte
+Enter customer last name: Gray
+
+1. Print customer.
+2. Customer rents video.
+3. Customer returns video.
+4. Quit
+Enter choice: 1
+
+Walte Gray
+Videos rented:
+
+
+Number rented:0
+1. Print customer.
+2. Customer rents video.
+3. Customer returns video.
+4. Quit
+Enter choice: 2
+
+Enter name of video: Terminator3
+1. Print customer.
+2. Customer rents video.
+3. Customer returns video.
+4. Quit
+Enter choice: 4
+
+]0;warlord@localhost:~/Proj3[warlord@localhost Proj3]$ exit
+exit
+
+Script done on Sun 16 Nov 2003 12:53:45 PM EST

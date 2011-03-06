@@ -1,0 +1,4 @@
+lab3test2.o: lab3test2.cc lab3listp2.h
+	g++  -c lab3test2.cc
+a.out: lab3test2.o
+	g++ lab3test2.o

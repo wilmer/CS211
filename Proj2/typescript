@@ -1,0 +1,299 @@
+Script started on Sun 19 Oct 2003 11:18:21 AM EDT
+]0;root@prymacy:/mnt/floppy[root@prymacy floppy]# ./playGame
+You start!
+
+
+Top of Discard Pile:
+6 of Clubs
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 7 of Diamonds
+ 3 9 of Spades
+ 4 2 of Spades
+ 5 King of Clubs
+ 6 9 of Hearts
+ 7 King of Diamonds
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+5
+Computer's Cards:
+ # Card
+ 1 Jack of Spades
+ 2 7 of Spades
+ 3 4 of Hearts
+ 4 Jack of Clubs
+ 5 2 of Diamonds
+ 6 6 of Diamonds
+
+Top of Discard Pile:
+2 of Clubs
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 7 of Diamonds
+ 3 9 of Spades
+ 4 2 of Spades
+ 5 King of Diamonds
+ 6 9 of Hearts
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+4
+Computer's Cards:
+ # Card
+ 1 6 of Diamonds
+ 2 7 of Spades
+ 3 4 of Hearts
+ 4 Jack of Clubs
+ 5 2 of Diamonds
+
+Top of Discard Pile:
+Jack of Spades
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 7 of Diamonds
+ 3 9 of Spades
+ 4 9 of Hearts
+ 5 King of Diamonds
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+3
+Computer's Cards:
+ # Card
+ 1 6 of Diamonds
+ 2 2 of Diamonds
+ 3 4 of Hearts
+ 4 Jack of Clubs
+
+Top of Discard Pile:
+7 of Spades
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 7 of Diamonds
+ 3 King of Diamonds
+ 4 9 of Hearts
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+2
+Computer's Cards:
+ # Card
+ 1 Jack of Clubs
+ 2 2 of Diamonds
+ 3 4 of Hearts
+
+Top of Discard Pile:
+6 of Diamonds
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 King of Diamonds
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+3
+Computer's Cards:
+ # Card
+ 1 Jack of Clubs
+ 2 4 of Hearts
+
+Top of Discard Pile:
+2 of Diamonds
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+
+1. Play a card
+2. Draw a card
+
+Your choice: 2
+Computer's Cards:
+ # Card
+ 1 Jack of Clubs
+ 2 4 of Hearts
+ 3 Queen of Hearts
+
+Top of Discard Pile:
+2 of Diamonds
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 3 of Diamonds
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+3
+Computer's Cards:
+ # Card
+ 1 Jack of Clubs
+ 2 4 of Hearts
+ 3 Queen of Hearts
+ 4 Jack of Hearts
+
+Top of Discard Pile:
+3 of Diamonds
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+
+1. Play a card
+2. Draw a card
+
+Your choice: 2
+Computer's Cards:
+ # Card
+ 1 Jack of Clubs
+ 2 4 of Hearts
+ 3 Queen of Hearts
+ 4 Jack of Hearts
+ 5 8 of Spades
+
+Top of Discard Pile:
+3 of Diamonds
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 King of Spades
+
+1. Play a card
+2. Draw a card
+
+Your choice: 2
+Computer's Cards:
+ # Card
+ 1 Jack of Clubs
+ 2 4 of Hearts
+ 3 Queen of Hearts
+ 4 Jack of Hearts
+
+Top of Discard Pile:
+8 of Clubs
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 King of Spades
+ 4 6 of Hearts
+
+1. Play a card
+2. Draw a card
+
+Your choice: 2
+Computer's Cards:
+ # Card
+ 1 Jack of Hearts
+ 2 4 of Hearts
+ 3 Queen of Hearts
+
+Top of Discard Pile:
+Jack of Clubs
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 King of Spades
+ 4 6 of Hearts
+ 5 3 of Spades
+
+1. Play a card
+2. Draw a card
+
+Your choice: 2
+Computer's Cards:
+ # Card
+ 1 Queen of Hearts
+ 2 4 of Hearts
+
+Top of Discard Pile:
+Jack of Hearts
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 King of Spades
+ 4 6 of Hearts
+ 5 3 of Spades
+ 6 9 of Diamonds
+
+1. Play a card
+2. Draw a card
+
+Your choice: 2
+Computer's Cards:
+ # Card
+ 1 4 of Hearts
+
+Top of Discard Pile:
+Queen of Hearts
+
+Your cards:
+ # Card
+ 1 Ace of Spades
+ 2 9 of Hearts
+ 3 King of Spades
+ 4 6 of Hearts
+ 5 3 of Spades
+ 6 9 of Diamonds
+ 7 5 of Spades
+
+1. Play a card
+2. Draw a card
+
+Your choice: 1
+
+Choose card # to play:
+4
+
+Computer wins.
+Your score is: -37
+Computer's Cards:
+ # Card
+]0;root@prymacy:/mnt/floppy[root@prymacy floppy]# exit
+
+Script done on Sun 19 Oct 2003 11:20:08 AM EDT
